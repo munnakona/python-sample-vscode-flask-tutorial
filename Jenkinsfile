@@ -7,6 +7,11 @@ pipeline {
         cron('0 * * * *')
     }
     stages {
+          stage('Checkout code') {
+        steps {
+            checkout scm
+        }
+    }
     stage('build') {
       steps {
         sh 'pip install -r requirements.txt'
