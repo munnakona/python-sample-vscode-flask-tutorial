@@ -31,4 +31,5 @@ pipeline {
                     junit "pyunit.xml"
                 }
             }
+    }
 }
