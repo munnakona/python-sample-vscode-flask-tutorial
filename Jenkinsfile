@@ -9,23 +9,38 @@ pipeline {
     stages {
           stage('Checkout code') {
         steps {
-            checkout scm
+            checkout(
+                giturl: 'https://github.com/munnakona/python-sample-vscode-flask-tutorial.git',
+                branch: 'master'
+            )
         }
     }
-    stage('build') {
+
+    stage('Setup') { // Install any dependencies you need to perform testing
       steps {
-        sh 'pip install -r requirements.txt'
-      }
-    }
-    stage('test') {
-      steps {
-        sh 'python test_test1.py'
-      }
-      post {
-        always {
-          junit 'test-reports/*.xml'
+        script {
+          sh """
+          pip install -r requirements.txt
+          """
         }
-      }    
+      }
     }
-  }
+    stage('Linting') { // Run pylint against your code
+      steps {
+        script {
+          sh """
+          pylint **/*.py
+          """
+        }
+      }
+    }
+    stage('Unit Testing') { // Perform unit testing
+      steps {
+        script {
+          sh """
+          python -m unittest discover -s tests/unit
+          """
+        }
+      }
+    }
 }
