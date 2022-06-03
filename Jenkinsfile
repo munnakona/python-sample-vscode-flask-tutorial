@@ -20,7 +20,6 @@ pipeline {
                 }
             }
         }
-        }
         stage('Running Unit tests') {
             steps {
                 script {
@@ -31,5 +30,6 @@ pipeline {
                     junit "pyunit.xml"
                 }
             }
+        }
     }
 }
