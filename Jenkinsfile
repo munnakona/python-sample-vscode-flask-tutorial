@@ -1,47 +1,27 @@
-pipeline {
-    agent { label 'npm' }
-    options {
-        timeout(time:1, unit: 'HOURS')
-    }
-    triggers{
-        cron('0 * * * *')
-    }
-    stages {
-          stage('Checkout code') {
-        steps {
-            checkout(
-                giturl: 'https://github.com/munnakona/python-sample-vscode-flask-tutorial.git',
-                branch: 'master'
-            )
+pipeline{
+    agent{label 'node2'}
+    stages{
+        stage( 'source code from git' ){
+            steps{
+               git branch : 'master' url: 'https://github.com/munnakona/python-sample-vscode-flask-tutorial.git'
+            }
+        }
+        stage('build'){
+            steps{
+                sh 'pip install -r requirements.txt'
+            }
+        }
+        stage('test'){
+            steps{
+                sh ' pip install pytest pytest-azurepipelines '
+                sh ' pip install pytest-cov '
+                sh 'pytest --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml'
+            }
+        }
+        stage( 'publish'){
+            steps{
+                junit testResults: '**/test-*.xml'
+            }
         }
     }
-
-    stage('Setup') { // Install any dependencies you need to perform testing
-      steps {
-        script {
-          sh """
-          pip install -r requirements.txt
-          """
-        }
-      }
-    }
-    stage('Linting') { // Run pylint against your code
-      steps {
-        script {
-          sh """
-          pylint **/*.py
-          """
-        }
-      }
-    }
-    stage('Unit Testing') { // Perform unit testing
-      steps {
-        script {
-          sh """
-          python -m unittest discover -s tests/unit
-          """
-        }
-      }
-    }
-}
 }
