@@ -19,10 +19,10 @@ pipeline{
                 sh 'pytest --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml'
             }
         }
-        stage( 'publish'){
-            steps{
-                junit testResults: '**/test-*.xml'
-            }
-        }
+        // stage( 'publish'){
+        //     steps{
+        //         junit testResults: '**/test-*.xml'
+        //     }
+        // }
     }
 }
