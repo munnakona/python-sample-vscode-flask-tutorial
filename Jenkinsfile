@@ -1,5 +1,5 @@
 pipeline{
-    agent{label 'node2'}
+    agent{label 'Node2'}
     stages{
         stage( 'source code from git' ){
             steps{
